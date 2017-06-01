@@ -34,7 +34,6 @@ class SelfBot(commands.Bot):
             'cogs.meta',
             'cogs.regional_indicator',
             'cogs.repl',
-            'cogs.search',
             'cogs.slashes',
         ]
 
