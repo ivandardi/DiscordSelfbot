@@ -2,6 +2,7 @@
 .*/
 *.sqlite3
 *.json
+discord/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

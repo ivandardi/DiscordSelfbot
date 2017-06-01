@@ -1,19 +1,19 @@
 import datetime
-import json
 import logging
+import os
 import traceback
 
 import discord
 from discord.ext import commands
 
 
-def setup_logger(name: str):
+def setup_logger():
     handler = logging.FileHandler(filename='logging.log', encoding='utf-8', mode='w')
 
     formatter = logging.Formatter(fmt='%(asctime)s [%(levelname)s] %(module)s - %(message)s')
     handler.setFormatter(formatter)
 
-    logger = logging.getLogger(name)
+    logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     logger.addHandler(handler)
     return logger
@@ -21,7 +21,7 @@ def setup_logger(name: str):
 
 discord_logger = logging.getLogger('discord')
 discord_logger.setLevel(logging.INFO)
-log = setup_logger('selfbot')
+log = setup_logger()
 
 
 class SelfBot(commands.Bot):
@@ -37,9 +37,6 @@ class SelfBot(commands.Bot):
             'cogs.search',
             'cogs.slashes',
         ]
-
-        with open('credentials.json') as f:
-            self.credentials = json.load(f)
 
     async def on_ready(self):
         print('Logged in as')
@@ -69,7 +66,6 @@ if __name__ == '__main__':
     bot = SelfBot(
         self_bot=True,
         command_prefix=['.', '/', 'me.'],
-        help_attrs=dict(hidden=True),
     )
 
     for extension in bot.initial_extensions:
@@ -78,7 +74,7 @@ if __name__ == '__main__':
         except Exception as e:
             print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
 
-    bot.run(bot.credentials['token'], bot=False)
+    bot.run(os.environ['TOKEN'], bot=False)
 
     handlers = log.handlers[:]
     for hdlr in handlers:

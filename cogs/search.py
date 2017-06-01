@@ -89,7 +89,7 @@ class Definition(object):
 class Search:
     def __init__(self, bot: SelfBot):
         self.bot = bot
-        self.client = aiohttp.ClientSession()
+        self.client = aiohttp.ClientSession(loop=self.bot.loop)
 
     def __unload(self):
         self.client.close()
