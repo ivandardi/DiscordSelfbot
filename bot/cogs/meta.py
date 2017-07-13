@@ -13,8 +13,8 @@ class Meta:
     async def close(self, ctx: commands.Context):
         """Closes the bot safely"""
 
-        await self.bot.logout()
         await ctx.message.delete()
+        await self.bot.logout()
 
     @commands.command()
     async def uptime(self, ctx: commands.Context):
@@ -32,8 +32,8 @@ class Meta:
 
         await ctx.message.edit(content='Uptime: **{}**'.format(fmt.format(d=days, h=hours, m=minutes, s=seconds)))
 
-    @commands.command(aliases=['prune', 'clear'])
-    async def purge(self, ctx: commands.Context, limit: int = 100):
+    @commands.command()
+    async def clean(self, ctx: commands.Context, limit: int = 100):
         """Purge messages in the current channel. Default limit is 100 messages"""
 
         deleted = await ctx.channel.purge(limit=limit, check=lambda m: m.author.id == self.bot.user.id)
@@ -51,14 +51,14 @@ class Meta:
                 self.bot.unload_extension(m)
                 self.bot.load_extension(m)
 
-    @purge.error
-    @_reload.error
-    async def meta_error(self, error, ctx: commands.Context):
+    async def __error(self, ctx: commands.Context, error):
         await ctx.message.edit(content=f'Failed to execute command!\n{type(error).__name__}: {error}')
 
-    @_reload.after_invoke
-    async def ok_hand(self, ctx: commands.Context):
-        await ctx.message.add_reaction('👌')
+    async def __after_invoke(self, ctx: commands.Context):
+        try:
+            await ctx.message.add_reaction('👌')
+        except:
+            pass
 
 
 def setup(bot):
